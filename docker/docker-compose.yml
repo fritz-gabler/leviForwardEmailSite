@@ -1,0 +1,22 @@
+services:
+
+  express-server:
+    image: fgabler/express:latest
+    build:
+      context: ../.
+      dockerfile: ./docker/Dockerfile
+    networks:
+      - express_net
+    volumes:
+      - ../app:/app
+      - ../app/bash/init.sh:/app/bash/init.sh
+
+
+    ports:
+      - "3000:3000"
+
+networks:
+  express_net:
+    name: 'express_net'
+    driver: bridge
+
