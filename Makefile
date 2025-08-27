@@ -5,5 +5,5 @@ cclean:
 	docker system prune -f
 	docker rmi -f $$(docker images -qa) || true
 
-stop:
-	docker compose stop
+down:
+	docker compose -f ./docker/docker-compose.yml down
