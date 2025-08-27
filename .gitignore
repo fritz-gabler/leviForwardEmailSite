@@ -1,0 +1,28 @@
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Nginx
+logs/
+*.conf
+*.conf.bak
+
+# Docker
+docker-compose.override.yml
+.docker/
+.dockerenv
+
+# HTML/CSS assets
+*.log
+*.map
+.DS_Store
+/dist/
+/tmp/
+
+# General
+.env
+.env*.local
+/*.env
+.env*.local
+*.pem
+
