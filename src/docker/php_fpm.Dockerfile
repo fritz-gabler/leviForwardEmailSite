@@ -17,6 +17,9 @@ RUN apt update && apt install -y \
 
 COPY ./php-fpm/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 
+RUN mkdir -p /var/www/html && echo "<?php phpinfo(); ?>" > /var/www/html/info.php
 RUN mkdir -p /run/php
+
+
 
 CMD ["php-fpm7.4", "-F"]
