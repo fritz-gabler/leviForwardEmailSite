@@ -1,6 +1,7 @@
 services:
 
   express-server:
+    container_name: express-server
     image: fgabler/express:latest
     build:
       context: ../.
@@ -14,6 +15,7 @@ services:
 
 
   nginx:
+    container_name: nginx
     image: fgabler/nginx:latest
     build:
       context: ../.
@@ -22,14 +24,19 @@ services:
       - "443:443"
     depends_on:
       - express-server
+    volumes:
+      - php-fpm-and-nginx-vol:/var/www/html
 
   php-fpm:
+    container_name: php-fpm
     image: fgabler/php-fpm:latest
     build:
       context: ../.
       dockerfile: ./docker/php_fpm.Dockerfile
     ports:
-      - "8080:80"
+      - "9000"
+    volumes:
+      - php-fpm-and-nginx-vol:/var/www/html
 
 networks:
   express_net:
@@ -38,18 +45,11 @@ networks:
 
 
 volumes:
-  nginx-vol:
-    name: 'nginx-vol'
+  php-fpm-and-nginx-vol:
+    name: 'php-fpm-and-nginx-vol'
     driver: local
     driver_opts:
-      device: "/var/local/data/leviForwardEmailSite/nginx"
-      o: bind
-      type: none
-  php-fpm-vol:
-    name: 'php-fpm-vol'
-    driver: local
-    driver_opts:
-      device: "/var/local/data/leviForwardEmailSite/php-fpm"
+      device: "/var/local/data/leviForwardEmailSite/php-fpm-and-nginx"
       o: bind
       type: none
   express-server:
