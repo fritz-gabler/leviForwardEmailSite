@@ -1,0 +1,62 @@
+services:
+
+  express-server:
+    image: fgabler/express:latest
+    build:
+      context: ../.
+      dockerfile: ./docker/express.Dockerfile
+    networks:
+      - express_net
+    volumes:
+      - ../app:/app
+    ports:
+      - "3000:3000"
+
+
+  nginx:
+    image: fgabler/nginx:latest
+    build:
+      context: ../.
+      dockerfile: ./docker/nginx.Dockerfile
+    ports:
+      - "443:443"
+    depends_on:
+      - express-server
+
+  php-fpm:
+    image: fgabler/php-fpm:latest
+    build:
+      context: ../.
+      dockerfile: ./docker/php_fpm.Dockerfile
+    ports:
+      - "8080:80"
+
+networks:
+  express_net:
+    name: 'express_net'
+    driver: bridge
+
+
+volumes:
+  nginx-vol:
+    name: 'nginx-vol'
+    driver: local
+    driver_opts:
+      device: "/var/local/data/leviForwardEmailSite/nginx"
+      o: bind
+      type: none
+  php-fpm-vol:
+    name: 'php-fpm-vol'
+    driver: local
+    driver_opts:
+      device: "/var/local/data/leviForwardEmailSite/php-fpm"
+      o: bind
+      type: none
+  express-server:
+    name: 'express-server'
+    driver: local
+    driver_opts:
+      device: "/var/local/data/leviForwardEmailSite/express-server"
+      o: bind
+      type: none
+  
