@@ -9,4 +9,4 @@ cclean:
 down:
 	docker compose -f ./src/docker/docker-compose.yml down
 
-re: cclean up
+re: down cclean up
