@@ -2,9 +2,12 @@ FROM node:20
 
 WORKDIR /app
 
-RUN mkdir -p ./bash
+RUN \
+    mkdir -p ./frontend && \
+    mkdir -p ./bash 
 
-COPY app/. .
+COPY frontend/. ./frontend/
+COPY app/. ./
 
 RUN npm install
 

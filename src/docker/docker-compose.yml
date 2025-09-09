@@ -9,7 +9,7 @@ services:
     networks:
       - express_net
     volumes:
-      - ../app:/app
+      - /var/local/data/leviForwardEmailSite/express-server/package.json:/app/package.json
     ports:
       - "3000:3000"
 
@@ -52,11 +52,3 @@ volumes:
       device: "/var/local/data/leviForwardEmailSite/php-fpm-and-nginx"
       o: bind
       type: none
-  express-server:
-    name: 'express-server'
-    driver: local
-    driver_opts:
-      device: "/var/local/data/leviForwardEmailSite/express-server"
-      o: bind
-      type: none
-  

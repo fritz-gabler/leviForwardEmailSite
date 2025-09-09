@@ -15,9 +15,12 @@ RUN apt update && apt install -y \
 
 # Add any extra apt packages here (e.g. git, unzip, etc.)
 
-COPY ./php-fpm/www.conf /etc/php/7.4/fpm/pool.d/www.conf
+RUN mkdir -p /var/www/html
 
-RUN mkdir -p /var/www/html && echo "<?php phpinfo(); ?>" > /var/www/html/info.php
+COPY ./php-fpm/www.conf /etc/php/7.4/fpm/pool.d/www.conf
+COPY ./php-fpm/php/index.php var/www/html/
+COPY ./php-fpm/php/get_mail_accounts.php var/www/html/
+
 RUN mkdir -p /run/php
 
 
