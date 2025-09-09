@@ -1,0 +1,118 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "name": "Email Forwarding System",
+    "version": "1.3",
+    "description": "A comprehensive workspace for an email forwarding application with frontend, backend, and SOAP API integration",
+    "system_prompt": "You are an expert in full-stack web development. You specialize in helping users with applications that require both frontend UI and backend server components, particularly those involving email systems and SOAP API integrations",
+    "groups": [
+        {
+            "name": "Frontend Components",
+            "description": "All frontend UI components and assets",
+            "system_prompt": "Focus on helping with frontend development questions. Consider HTML structure, CSS styling, and JavaScript functionality",
+            "data": [
+                "frontend_html",
+                "frontend_css",
+                "frontend_js",
+                "frontend_js_modules",
+                "frontend_js_utils",
+                "frontend_assets"
+            ]
+        },
+        {
+            "name": "API Interaction",
+            "description": "Code that handles the SOAP API integration",
+            "system_prompt": "Focus on questions about API interactions, particularly with the SOAP API via PHP. Consider how the front end communicates with PHP backend and how PHP interacts with the SOAP API",
+            "data": [
+                "php_soap_service",
+                "php_utils",
+                "php_fpm_config",
+                "soap_api_query",
+                "nginx_config_api"
+            ]
+        },
+        {
+            "name": "Backend - Express",
+            "description": "The main application server using Express.js",
+            "system_prompt": "Focus on helping with backend development questions for the Express.js application. Reference server configuration, routes, and middleware when answering questions",
+            "data": [
+                "express_server",
+                "express_routes",
+                "express_utils",
+                "express_env"
+            ]
+        },
+        {
+            "name": "Server Configuration",
+            "description": "All server configurations and settings",
+            "system_prompt": "Help with questions specifically about server configuration, deployment, and environment setup",
+            "data": [
+                "nginx_config",
+                "nginx_config_api",
+                "php_fpm_config",
+                "environment_variables",
+                "package_management"
+            ]
+        },
+        {
+            "name": "System Documentation",
+            "description": "Documentation about the system architecture and design",
+            "system_prompt": "Help with questions about the system architecture, design patterns, and overall structure",
+            "data": [
+                "system_architecture",
+                "readmes"
+            ]
+        }
+    ],
+    "data": {
+        "frontend_html": {
+            "type": "file",
+            "path": "src/frontend/index.html",
+            "description": "Main HTML file for the application"
+        },
+        "frontend_css": {
+            "type": "file",
+            "path": "src/frontend/styles.css",
+            "description": "Main CSS stylesheet for the application"
+        },
+        "frontend_js": {
+            "type": "file",
+            "path": "src/frontend/main.js",
+            "description": "Main JavaScript file for frontend functionality"
+        },
+        "express_server": {
+            "type": "file",
+            "path": "src/app/index.js",
+            "description": "Main Express.js server configuration"
+        },
+        "express_routes": {
+            "type": "symbols",
+            "path": "src/app/routes/**/*.js",
+            "description": "Express route handlers"
+        },
+        "php_soap_service": {
+            "type": "file",
+            "path": "php-fpm/php/get_mail_accounts.php",
+            "description": "Main PHP SOAP service implementation"
+        },
+        "php_fpm_config": {
+            "type": "file",
+            "path": "php-fpm/www.conf",
+            "description": "PHP-FPM configuration"
+        },
+        "php_fpm_index": {
+            "type": "file",
+            "path": "php-fpm/php/index.php",
+            "description": "PHP-FPM configuration"
+        },
+        "nginx_config": {
+            "type": "file",
+            "path": "config/nginx.{local,staging,production}.conf",
+            "description": "Nginx server configuration for the web frontend"
+        },
+        "package_management": {
+            "type": "file",
+            "path": "src/app/package*.json",
+            "description": "Node.js package management files"
+        }
+    }
+}
