@@ -3,7 +3,7 @@ eventListeners();
 function eventListeners() {
   const submitApiFile = document.getElementById("submitApiFile");
 
-  submitApiFile.addEventListener("click", async ()=> { await handleApiFile()});
+  submitApiFile.addEventListener("click", async () => { await handleApiFile() });
 
 }
 
@@ -15,8 +15,9 @@ async function handleApiFile() {
   const file = apiFileInput.files[0];
   if (await validInputFileCheck(file) === true) {
     saveFileContentInLocalStorage(file);
-    changeUploadState("Succsess. Fetching email accounts");
+    changeUploadState("Success. Fetching email accounts");
     await fetchExistingMails();
+    console.log("Hats geklappt");
   }
   else
     changeUploadState("Wrong File Format");
@@ -26,7 +27,7 @@ function changeUploadState(message) {
   const uploadState = document.getElementById("uploadState");
 
   uploadState.textContent = message;
-  
+
 }
 
 
@@ -51,7 +52,7 @@ function getFileContent(file) {
     const fileReader = new FileReader();
     fileReader.readAsText(file);
     fileReader.addEventListener("load", () => {
-        resolve(fileReader.result);
+      resolve(fileReader.result);
     });
   });
 }
@@ -65,39 +66,23 @@ async function saveFileContentInLocalStorage(file) {
 
 
 async function fetchExistingMails() {
-  const kasLogin = localStorage.getItem("kas_login");
-  const kasAuthData = localStorage.getItem("kas_auth_data");
-  const apiBody = createSoapBodyGetAccounts(kasLogin, kasAuthData, "plain");
-  const endpoint = "https://kasapi.kasserver.com/soap/wsdl"
-
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/xml; charset=utf-8"
-    },
-    body: apiBody
-  });
-  // To see the full SOAP response:
-  const text = await response.text();
-  console.log(text);
+  setLoginData();
 }
 
+async function setLoginData() {
+  const kasLogin = localStorage.getItem("kas_login");
+  const kasAuthData = localStorage.getItem("kas_auth_data");
 
-function createSoapBodyGetAccounts(
-  kasLogin,
-  kasAuthData,
-  kasAuthType = "plain",
-) {
-  return `
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
-  <soapenv:Header/>
-  <soapenv:Body>
-    <get_mailaccounts>
-      <kas_login>${kasLogin}</kas_login>
-      <kas_auth_data>${kasAuthData}</kas_auth_data>
-      <kas_auth_type>${kasAuthType}</kas_auth_type>
-    </get_mailaccounts>
-  </soapenv:Body>
-</soapenv:Envelope>
-  `;
+  console.log("set login data was called");
+  const response = await fetch('http://localhost:3000/login-data/set', {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      kas_login: kasLogin,
+      kas_auth: kasAuthData,
+      kas_auth_type: "plain"
+    })
+  });
+  const result = await response.text();
+  console.log("API STATMENT: ", result);
 }
