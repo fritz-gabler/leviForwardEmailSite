@@ -67,6 +67,7 @@ async function saveFileContentInLocalStorage(file) {
 
 async function fetchExistingMails() {
   setLoginData();
+  getMailAccounts();
 }
 
 async function setLoginData() {
@@ -85,4 +86,15 @@ async function setLoginData() {
   });
   const result = await response.text();
   console.log("API STATMENT: ", result);
+}
+
+async function getMailAccounts() {
+  console.log("Test from get mail frontend")
+  const response = await fetch('http://localhost:3000/mail-accounts/get', {
+    method: "GET"
+  });
+
+
+  console.log("Response get mail accounts:");
+  console.log(response);
 }

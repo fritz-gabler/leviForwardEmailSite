@@ -1,42 +1,33 @@
 <?php
-// get_mailaccounts.php
-
 header('Content-Type: application/json');
 
-// Replace with actual KAS endpoint (check their docs for the right URL)
-$kas_url = "https://kasapi.yourprovider.com/soap/";
+$postData = json_decode(file_get_contents('php://input'), true);
 
-$kas_login     = $_POST['kas_login'] ?? '';
-$kas_auth_data = $_POST['kas_auth_data'] ?? '';
-$kas_auth_type = $_POST['kas_auth_type'] ?? 'plain'; // "plain" is usually the default
+$kas_login = $postData['kas_login'] ?? '';
+$kas_auth_data = $postData['kas_auth_data'] ?? '';
 
 if (!$kas_login || !$kas_auth_data) {
     http_response_code(401);
-    echo json_encode(["error" => "Missing credentials"]);
+    echo json_encode(['error' => 'Not authenticated']);
     exit;
 }
 
-$params = [
-    'kas_login'     => $kas_login,
-    'kas_auth_data' => $kas_auth_data,
-    'kas_auth_type' => $kas_auth_type,
-    'kas_action'    => 'get_mailaccounts',
-    'anz_var'       => 0
-];
+try {
+    $soap = new SoapClient('https://kasapi.kasserver.com/soap/wsdl/KasApi.wsdl');
+    $apiParams = [
+        'kas_login'        => $kas_login,
+        'kas_auth_type'    => 'plain',
+        'kas_auth_data'    => $kas_auth_data,
+        'kas_action'       => 'get_mailaccounts',
+    ];
+    // Use json_encode for the parameters!
+    $result = $soap->KasApi(json_encode($apiParams));
 
-$ch = curl_init($kas_url);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($ch);
-
-if (curl_errno($ch)) {
-    echo json_encode(["error" => curl_error($ch)]);
+    // Output the result directly (it's already JSON)
+    echo $result;
+} catch (SoapFault $fault) {
     http_response_code(500);
-    exit;
+    echo json_encode(['error' => $fault->faultstring]);
 }
-curl_close($ch);
-
-echo $response;
 ?>
 
