@@ -19,11 +19,10 @@ try {
         'kas_auth_type'    => 'plain',
         'kas_auth_data'    => $kas_auth_data,
         'kas_action'       => 'get_mailaccounts',
+        'KasRequestParams' => []
     ];
-    // Use json_encode for the parameters!
     $result = $soap->KasApi(json_encode($apiParams));
 
-    // Output the result directly (it's already JSON)
     echo $result;
 } catch (SoapFault $fault) {
     http_response_code(500);
