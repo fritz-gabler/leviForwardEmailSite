@@ -23,7 +23,7 @@ try {
     ];
     $result = $soap->KasApi(json_encode($apiParams));
 
-    echo $result;
+    var_dump($result);
 } catch (SoapFault $fault) {
     http_response_code(500);
     echo json_encode(['error' => $fault->faultstring]);
