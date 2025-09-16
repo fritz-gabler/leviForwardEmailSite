@@ -3,31 +3,40 @@ eventListeners();
 function eventListeners() {
   const submitApiFile = document.getElementById("submitApiFile");
 
-  submitApiFile.addEventListener("click", async () => { await handleApiFile() });
+  submitApiFile.addEventListener("click", async function(event) {
+    await handleApiFile();
+  });
 
+  submintForwardEmail.addEventListener("click", async () => {
+    await createFrowardEmail();
+  });
+
+  document
+    .getElementById("redirect-form")
+    .addEventListener("submit", function(event) {
+      event.preventDefault();
+    });
 }
 
 async function handleApiFile() {
   const apiFileInput = document.getElementById("apiFile");
+  let file;
 
   changeUploadState("Uploading...");
+  file = apiFileInput.files[0];
 
-  const file = apiFileInput.files[0];
-  if (await validInputFileCheck(file) === true) {
-    saveFileContentInLocalStorage(file);
-    changeUploadState("Success. Fetching email accounts");
-    await fetchExistingMails();
-    console.log("Hats geklappt");
-  }
-  else
+  if ((await validInputFileCheck(file)) === false)
     changeUploadState("Wrong File Format");
+
+  saveFileContentInLocalStorage(file);
+  changeUploadState("Success. Fetching email accounts");
+  const emails = await fetchExistingMails();
+  changeEmailField(emails);
 }
 
 function changeUploadState(message) {
   const uploadState = document.getElementById("uploadState");
-
   uploadState.textContent = message;
-
 }
 
 
