@@ -2,6 +2,7 @@ eventListeners();
 
 function eventListeners() {
   const submitApiFile = document.getElementById("submitApiFile");
+  const submintForwardEmail = document.getElementById("sumbmitForwardEmail");
 
   submitApiFile.addEventListener("click", async function(event) {
     await handleApiFile();
@@ -140,3 +141,38 @@ function filterMailAccounts(unfilteredGetMailOutput, filter) {
   return allMails;
 }
 
+async function createFrowardEmail() {
+  const selectedEmail = getInputValue("email-list");
+  const localString = getInputValue("email-username");
+
+  callApiToCreateForwardMail(selectedEmail, localString);
+}
+
+async function callApiToCreateForwardMail(selectedEmail, localString) {
+  let response;
+  let url;
+
+  try {
+    url = "http://localhost:3000/mail-forward/create";
+    response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        selectedEmail: selectedEmail,
+        localString: localString,
+      }),
+    });
+    const textResponse = await response.text();
+  } catch (error) {
+    console.error("Error calling API create forward mail: ", error);
+  }
+}
+
+function getInputValue(id) {
+  const select = document.getElementById(id);
+
+  const selectedValue = select.value;
+  return selectedValue;
+}
