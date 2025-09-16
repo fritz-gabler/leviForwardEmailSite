@@ -14,21 +14,14 @@ router.get("/get", async (req, res) => {
         kas_auth_data: kas_auth_data,
       };
 
-      console.log("Test before");
       const nginxResponse = await axios.post(
         "http://nginx/php/get_mail_accounts.php",
         get_mail_account_body,
         { headers: { "Content-Type": "application/json" }, }
       );
-
-      console.log("Test after");
-
-      console.log("nginx response");
-      console.log(nginxResponse.data);
-      res.send("Hello from file");
+      return res.send(nginxResponse.data);
     } catch (error) {
-      console.error("Error", error);
-      res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
 });
 
