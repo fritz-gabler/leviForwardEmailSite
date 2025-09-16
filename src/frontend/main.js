@@ -39,6 +39,25 @@ function changeUploadState(message) {
   uploadState.textContent = message;
 }
 
+function changeEmailField(emails) {
+  const select = document.getElementById("email-list");
+  if (!select) {
+    console.error('Select element with ID "email-list" not found');
+    return;
+  }
+  select.innerHTML = "";
+
+  if (Array.isArray(emails)) {
+    emails.forEach((email) => {
+      const option = document.createElement("option");
+      option.value = email;
+      option.textContent = email;
+      select.appendChild(option);
+    });
+  } else {
+    console.error("emails argument is not an array");
+  }
+}
 
 async function validInputFileCheck(file) {
   try {
@@ -48,13 +67,10 @@ async function validInputFileCheck(file) {
     else if (fileContent.includes("kas_auth_data") === false) return false;
 
     return true;
-  }
-  catch (error) {
+  } catch (error) {
     console.error(error);
   }
 }
-
-
 
 function getFileContent(file) {
   return new Promise((resolve, reject) => {
@@ -66,44 +82,61 @@ function getFileContent(file) {
   });
 }
 
-
 async function saveFileContentInLocalStorage(file) {
   const fileContent = JSON.parse(await getFileContent(file));
   localStorage.setItem("kas_login", fileContent.kas_login);
   localStorage.setItem("kas_auth_data", fileContent.kas_auth_data);
 }
 
-
 async function fetchExistingMails() {
-  setLoginData();
-  getMailAccounts();
+  let allMails;
+  let allFilteredMails;
+
+  await setLoginData();
+  allMails = await getMailAccounts();
+  allFilteredMails = filterMailAccounts(allMails, /\b\S*-levi@\S*\b/g);
+  return allFilteredMails;
 }
 
 async function setLoginData() {
   const kasLogin = localStorage.getItem("kas_login");
   const kasAuthData = localStorage.getItem("kas_auth_data");
 
-  console.log("set login data was called");
-  const response = await fetch('http://localhost:3000/login-data/set', {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      kas_login: kasLogin,
-      kas_auth: kasAuthData,
-      kas_auth_type: "plain"
-    })
-  });
-  const result = await response.text();
-  console.log("API STATMENT: ", result);
+  try {
+    const response = await fetch("http://localhost:3000/login-data/set", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        kas_login: kasLogin,
+        kas_auth: kasAuthData,
+        kas_auth_type: "plain",
+      }),
+    });
+  } catch (error) {
+    console.error("Error setting login Data:", error);
+  }
 }
 
 async function getMailAccounts() {
-  console.log("Test from get mail frontend")
-  const response = await fetch('http://localhost:3000/mail-accounts/get', {
-    method: "GET"
-  });
+  let response;
+  let textResponse;
+  let allMails;
 
-
-  console.log("Response get mail accounts:");
-  console.log(response);
+  try {
+    response = await fetch("http://localhost:3000/mail-accounts/get", {
+      method: "GET",
+    });
+    textResponse = await response.text();
+  } catch (error) {
+    console.error("Error geting mail: ", error);
+  }
+  return textResponse;
 }
+
+function filterMailAccounts(unfilteredGetMailOutput, filter) {
+  let allMails;
+
+  allMails = unfilteredGetMailOutput.match(filter);
+  return allMails;
+}
+
