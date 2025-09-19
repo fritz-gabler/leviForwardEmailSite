@@ -26,7 +26,7 @@
             <img src="images/arrow.svg" />
           </button>
         </div>
-          <p class="upload-state" id="uploadState">Waiting for upload...</p>
+        <p class="user-message" id="uploadState">Waiting for upload...</p>
       </div>
 
       <div class="input-field">
@@ -35,6 +35,9 @@
           <input type="text" id="email-username" name="emailUsername" placeholder="e.g., vinted" required />
           <span>-levi@family-gaebler.com</span>
         </div>
+        <p class="user-message" id="email-upload">
+          Enter a word with no spaces...
+        </p>
       </div>
 
       <div class="input-field">
@@ -45,7 +48,10 @@
       </div>
 
       <div class="submit-button">
-        <button type="submit" class="form-submit" id="sumbmitForwardEmail">Erstellen</button>
+        <button type="button" class="form-submit" id="sumbmitForwardEmail">
+          Create
+        </button>
+        <p class="user-message" id="creationState">Status: Waiting</p>
       </div>
     </div>
   </form>

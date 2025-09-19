@@ -4,7 +4,7 @@ function eventListeners() {
   const submitApiFile = document.getElementById("submitApiFile");
   const submintForwardEmail = document.getElementById("sumbmitForwardEmail");
 
-  submitApiFile.addEventListener("click", async function(event) {
+  submitApiFile.addEventListener("click", async function (event) {
     await handleApiFile();
   });
 
@@ -12,31 +12,35 @@ function eventListeners() {
     await createFrowardEmail();
   });
 
-  document
-    .getElementById("redirect-form")
-    .addEventListener("submit", function(event) {
-      event.preventDefault();
-    });
 }
 
 async function handleApiFile() {
   const apiFileInput = document.getElementById("apiFile");
   let file;
 
-  changeUploadState("Uploading...");
+  changeMessage("uploadState", "Uploading...", "white");
   file = apiFileInput.files[0];
 
-  if ((await validInputFileCheck(file)) === false)
-    changeUploadState("Wrong File Format");
+  if ((await validInputFileCheck(file)) === false) {
+    changeMessage("uploadState", "Error: Invalid File", "bad");
+    return;
+  }
 
   saveFileContentInLocalStorage(file);
-  changeUploadState("Success. Fetching email accounts");
+  changeMessage("uploadState", "Success. Fetching email accounts", "good");
   const emails = await fetchExistingMails();
   changeEmailField(emails);
 }
 
-function changeUploadState(message) {
-  const uploadState = document.getElementById("uploadState");
+function changeMessage(elementId, message, messageType) {
+  const uploadState = document.getElementById(elementId);
+
+  if (message.size > 115)
+    message = message.substring(0, 115);
+
+  if (messageType === "bad") uploadState.style.color = "#ffb3ba";
+  else if (messageType === "good") uploadState.style.color = "#b7e4ba";
+  else uploadState.style.color = "white";
   uploadState.textContent = message;
 }
 
@@ -62,7 +66,8 @@ function changeEmailField(emails) {
 
 async function validInputFileCheck(file) {
   try {
-    if (file.type !== "application/json") return false;
+    if (!file || file.size === 0) return false;
+    else if (file.type !== "application/json") return false;
     const fileContent = await getFileContent(file);
     if (fileContent.includes("kas_login") === false) return false;
     else if (fileContent.includes("kas_auth_data") === false) return false;
@@ -145,12 +150,24 @@ async function createFrowardEmail() {
   const selectedEmail = getInputValue("email-list");
   const localString = getInputValue("email-username");
 
-  callApiToCreateForwardMail(selectedEmail, localString);
+  if (localString.includes(" ") === true) {
+    console.log("local_string includes spaces: {", localString, "}");
+    return;
+  }
+
+  await callApiToCreateForwardMail(selectedEmail, localString);
 }
 
 async function callApiToCreateForwardMail(selectedEmail, localString) {
   let response;
   let url;
+
+  localString = localString + "-levi";
+
+  if (localString === "-levi") {
+    changeMessage("creationState", "Error: forward field is empty", "bad");
+    return;
+  }
 
   try {
     url = "http://localhost:3000/mail-forward/create";
@@ -164,8 +181,11 @@ async function callApiToCreateForwardMail(selectedEmail, localString) {
         localString: localString,
       }),
     });
+    const message = "State: Sucess created forwardmail [" + localString + "@family-gaebler.com] forwarting to account: [" + selectedEmail + "].";
+    changeMessage("creationState", message, "good");
     const textResponse = await response.text();
   } catch (error) {
+    changeMessage("creationState", "Error create forward mail", "good");
     console.error("Error calling API create forward mail: ", error);
   }
 }
@@ -175,4 +195,5 @@ function getInputValue(id) {
 
   const selectedValue = select.value;
   return selectedValue;
+
 }
